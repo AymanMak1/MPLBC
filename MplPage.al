@@ -1,4 +1,4 @@
-page 50147 MplPage
+page 50100 MplPage
 {
     PageType = Card;
     ApplicationArea = All;
@@ -65,25 +65,44 @@ page 50147 MplPage
                     ApplicationArea = All;
                 }
             }
-        }
-    }
 
-    actions
-    {
-        area(Processing)
-        {
-            action(ActionName)
+            usercontrol(POSTAAPI; POSTAAPI)
             {
-                ApplicationArea = All;
 
-                trigger OnAction()
+                trigger OnControlReady()
                 begin
+                    Message('I am ready!')
+                end;
 
+                trigger OnInvoke(Context: JsonObject)
+                var
+                    Response: JsonObject;
+                begin
+                    if Confirm('Invoking?') then;
+                    CurrPage.POSTAAPI.OnInvokeResult(Response)
                 end;
             }
         }
     }
 
-    var
-        myInt: Integer;
+    actions
+    {
+        // Adds the action called "My Actions" to the Action menu 
+        area(Processing)
+        {
+            action("MPL")
+            {
+                Promoted = true;
+                PromotedCategory = Process;
+                ApplicationArea = All;
+                trigger OnAction()
+                var
+                    MPLAPI: Codeunit MPLAPI;
+                begin
+                    MPLAPI.Connect();
+                end;
+            }
+        }
+    }
+
 }
